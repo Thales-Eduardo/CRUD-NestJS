@@ -7,6 +7,7 @@ import {
   Delete,
   HttpStatus,
   Put,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
@@ -18,7 +19,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async createUser(res: Response, @Body() createUserDto: CreateUserDto) {
+  async createUser(
+    res: Response,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+  ) {
     try {
       const user = await this.usersService.create(createUserDto);
       return res.status(HttpStatus.CREATED).json({
@@ -75,7 +79,7 @@ export class UsersController {
   async update(
     res: Response,
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ) {
     try {
       const user = await this.usersService.update(id, updateUserDto);
