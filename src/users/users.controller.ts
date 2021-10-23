@@ -3,10 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  HttpStatus,
+  Put,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,27 +18,95 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async createUser(res: Response, @Body() createUserDto: CreateUserDto) {
+    try {
+      const user = await this.usersService.create(createUserDto);
+      return res.status(HttpStatus.CREATED).json({
+        message: '[INFO]] {createUser} - Usuário criado com sucesso',
+        status: true,
+        metadata: user,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {createUser} - Erro ao criar novo usuário',
+        status: false,
+        erro: error.message,
+      });
+    }
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(res: Response) {
+    try {
+      const users = await this.usersService.findAll();
+      return res.status(HttpStatus.CREATED).json({
+        message: '[INFO]] {findAll} - Sucesso ao buscar todo os usuários',
+        status: true,
+        metadata: users,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {findAll} - Erro ao buscar todo os usuários',
+        status: false,
+        erro: error.message,
+      });
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async findOne(res: Response, @Param('id') id: string) {
+    try {
+      const user = await this.usersService.findOne(id);
+      return res.status(HttpStatus.CREATED).json({
+        message: '[INFO]] {findOne} - Sucesso ao buscar o usuário pelo id',
+        status: true,
+        metadata: user,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {findOne} - Erro ao buscar o usuário pelo id',
+        status: false,
+        erro: error.message,
+      });
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  @Put(':id')
+  async update(
+    res: Response,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    try {
+      const user = await this.usersService.update(id, updateUserDto);
+      return res.status(HttpStatus.CREATED).json({
+        message: '[INFO]] {update} - Sucesso ao atualizar usuário pelo id',
+        status: true,
+        metadata: user,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {update} - Erro ao atualizar o usuário pelo id',
+        status: false,
+        erro: error.message,
+      });
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  async remove(res: Response, @Param('id') id: string) {
+    try {
+      await this.usersService.remove(id);
+      return res.status(HttpStatus.CREATED).json({
+        message: '[INFO]] {remove} - Sucesso ao deletar usuário pelo id',
+        status: true,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {remove} - Erro ao deletar o usuário pelo id',
+        status: false,
+        erro: error.message,
+      });
+    }
   }
 }
