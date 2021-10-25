@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Put,
   ValidationPipe,
+  Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
@@ -20,7 +21,7 @@ export class UsersController {
 
   @Post()
   async createUser(
-    res: Response,
+    @Res() res: Response,
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ) {
     try {
@@ -40,7 +41,7 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(res: Response) {
+  async findAll(@Res() res: Response) {
     try {
       const users = await this.usersService.findAll();
       return res.status(HttpStatus.CREATED).json({
@@ -58,7 +59,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(res: Response, @Param('id') id: string) {
+  async findOne(@Res() res: Response, @Param('id') id: string) {
     try {
       const user = await this.usersService.findOne(id);
       return res.status(HttpStatus.CREATED).json({
@@ -77,7 +78,7 @@ export class UsersController {
 
   @Put(':id')
   async update(
-    res: Response,
+    @Res() res: Response,
     @Param('id') id: string,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ) {
@@ -98,7 +99,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(res: Response, @Param('id') id: string) {
+  async remove(@Res() res: Response, @Param('id') id: string) {
     try {
       await this.usersService.remove(id);
       return res.status(HttpStatus.CREATED).json({
