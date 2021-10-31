@@ -14,15 +14,18 @@ import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiBody({ type: CreateUserDto })
   async createUser(
     @Res() res: Response,
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Body(ValidationPipe)
+    createUserDto: CreateUserDto,
   ) {
     try {
       const user = await this.usersService.create(createUserDto);
@@ -77,6 +80,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @ApiBody({ type: UpdateUserDto })
   async update(
     @Res() res: Response,
     @Param('id') id: string,
