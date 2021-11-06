@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBody } from '@nestjs/swagger';
+import { AuthUserDto } from './dto/auth-user.sto';
 
 @Controller('users')
 export class UsersController {
@@ -37,6 +38,28 @@ export class UsersController {
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: '[ERRO] {createUser} - Erro ao criar novo usuário',
+        status: false,
+        erro: error.message,
+      });
+    }
+  }
+
+  @Post('login')
+  @ApiBody({ type: AuthUserDto })
+  async authenticationController(
+    @Res() res: Response,
+    @Body(ValidationPipe)
+    data: AuthUserDto,
+  ) {
+    try {
+      await this.usersService.authentication(data);
+      return res.status(HttpStatus.OK).json({
+        message: '[INFO]] {createUser} - Usuário logado com sucesso',
+        status: true,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '[ERRO] {createUser} - Erro ao logar usuário',
         status: false,
         erro: error.message,
       });
