@@ -14,14 +14,20 @@ import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthUserDto } from './dto/auth-user.sto';
 
 @Controller('users')
+@ApiTags("usuário")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiResponse({
+    status: 200,
+    description: "Criar novo usuário.",
+    type: CreateUserDto
+  })
   @ApiBody({ type: CreateUserDto })
   async createUser(
     @Res() res: Response,
@@ -45,6 +51,10 @@ export class UsersController {
   }
 
   @Post('login')
+  @ApiResponse({
+    status: 200,
+    description: "Autenticar usuário.",
+  })
   @ApiBody({ type: AuthUserDto })
   async authenticationController(
     @Res() res: Response,
@@ -67,6 +77,12 @@ export class UsersController {
   }
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: "Listar todos os usuários.",
+    type: CreateUserDto,
+    isArray: true
+  })
   async findAll(@Res() res: Response) {
     try {
       const users = await this.usersService.findAll();
@@ -85,6 +101,11 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: "Lista usuário por id.",
+    type: CreateUserDto
+  })
   async findOne(@Res() res: Response, @Param('id') id: string) {
     try {
       const user = await this.usersService.findOne(id);
@@ -103,6 +124,11 @@ export class UsersController {
   }
 
   @Put(':id')
+  @ApiResponse({
+    status: 200,
+    description: "Atualizar dados do usuário.",
+    type: UpdateUserDto
+  })
   @ApiBody({ type: UpdateUserDto })
   async update(
     @Res() res: Response,

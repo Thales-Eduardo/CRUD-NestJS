@@ -1,7 +1,8 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ValidateNested()
   @ApiProperty({
     type: 'string',
     example: 'Thales Eduardo',
@@ -10,6 +11,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'password é obrigatório' })
   name: string;
 
+  @ValidateNested()
   @ApiProperty({
     type: 'string',
     example: 'thalesdev22@gmail.com',
@@ -18,6 +20,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'password é obrigatório' })
   email: string;
 
+  @ValidateNested()
   @ApiProperty({
     type: 'string',
     example: '123456',
